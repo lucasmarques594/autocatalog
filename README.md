@@ -20,11 +20,6 @@
 
 <br>
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/12345/caminho-para-seu-screenshot.png" alt="Screenshot da Aplicação AutoCatalog" width="80%">
-</p>
-*(Nota: Substitua o link acima por um screenshot real da sua aplicação. Você pode subir a imagem para o próprio repositório ou para um serviço como o Imgur)*
-
 ---
 
 ## ✨ Funcionalidades Principais
