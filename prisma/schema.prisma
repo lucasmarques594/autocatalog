@@ -1,0 +1,160 @@
+// ./prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS (Tipos pré-definidos)
+enum Role {
+  ADMIN
+  STORE
+  SELLER
+  INDIVIDUAL_SELLER
+  BUYER
+}
+
+enum FuelType {
+  GASOLINE
+  ETHANOL
+  FLEX
+  DIESEL
+  ELECTRIC
+  HYBRID
+}
+
+enum Transmission {
+  MANUAL
+  AUTOMATIC
+}
+
+enum DriveType {
+  FWD // Front-wheel drive
+  RWD // Rear-wheel drive
+  AWD // All-wheel drive
+  FOUR_BY_FOUR
+}
+
+enum RoofType {
+  NONE
+  SUNROOF
+  PANORAMIC
+}
+
+enum DirectionType {
+  MECHANICAL
+  HYDRAULIC
+  ELECTRIC
+}
+
+enum CarStatus {
+  AVAILABLE
+  SOLD
+}
+
+
+// MODELS (As Tabelas do Banco)
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  store   Store?   // Um usuário pode ser dono de uma loja
+  seller  Seller?  // Um usuário pode ser um vendedor
+  cars    Car[]    // Carros cadastrados por este usuário (para Vendedores Individuais)
+  profile Profile? // Perfil associado
+}
+
+model Profile {
+  id      String @id @default(cuid())
+  userId  String @unique
+  user    User   @relation(fields: [userId], references: [id])
+  
+  // Dados específicos do perfil
+  cpf   String? @unique
+  cnpj  String? @unique
+}
+
+model Store {
+  id          String   @id @default(cuid())
+  userId      String   @unique // Dono da loja
+  user        User     @relation(fields: [userId], references: [id])
+  
+  name        String
+  address     String
+  description String?
+  
+  sellers     Seller[] // Vendedores associados a esta loja
+  cars        Car[]    // Carros da loja
+}
+
+model Seller {
+  id      String @id @default(cuid())
+  userId  String @unique
+  user    User   @relation(fields: [userId], references: [id])
+  
+  storeId String
+  store   Store  @relation(fields: [storeId], references: [id])
+}
+
+model Car {
+  id                    String     @id @default(cuid())
+  model                 String
+  brand                 String
+  year                  Int
+  version               String
+  color                 String
+  mileage               Int
+  fuelType              FuelType
+  transmission          Transmission
+  doors                 Int
+  plateStart            String
+  engine                String
+  enginePower           String
+  airConditioning       Boolean
+  direction             DirectionType
+  electricWindows       Boolean
+  leatherSeats          Boolean
+  mediaCenter           Boolean
+  reverseCamera         Boolean
+  parkingSensor         Boolean
+  airbags               Int
+  absBrakes             Boolean
+  wheels                String
+  tires                 String
+  suspension            String
+  paintCondition        String
+  ownerManual           Boolean
+  backupKey             Boolean
+  licensingUpToDate     Boolean
+  ownersCount           Int
+  collisionHistory      String
+  documentSituation     String
+  driveType             DriveType
+  alarm                 Boolean
+  roof                  RoofType
+  price                 Float
+  images                Json
+  status                CarStatus  @default(AVAILABLE)
+  
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  // Relação: Quem criou o carro?
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  // Relação com a loja (opcional, se for de uma loja)
+  storeId     String?
+  store       Store?   @relation(fields: [storeId], references: [id])
+}
