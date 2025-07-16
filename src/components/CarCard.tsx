@@ -1,6 +1,8 @@
 import { Car } from '@prisma/client';
 import Image from 'next/image';
 import { Heart, Share2, Eye, Calendar, Gauge, MapPin, Zap, Star } from 'lucide-react';
+import Link from 'next/link'; 
+import { Button } from '@/components/ui/Button';
 
 interface CarCardProps {
   car: Car;
@@ -54,7 +56,9 @@ export const CarCard: React.FC<CarCardProps> = ({ car }) => {
             Verificado
           </div>
         </div>
-
+        <Link href={`/cars/${car.id}/edit`}>
+                           <Button variant="secondary">Editar</Button>
+                        </Link>
         {/* Botões de ação - aparecem no hover */}
         <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button className="w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110">
