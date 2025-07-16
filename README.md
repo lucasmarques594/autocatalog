@@ -63,7 +63,7 @@ Siga os passos abaixo para executar o AutoCatalog em sua máquina.
 
 1.  **Clone o repositório:**
     ```bash
-    git clone https://github.com/seu-usuario/auto-catalog.git
+    git clone https://github.com/lucasmarques594/auto-catalog.git
     cd auto-catalog
     ```
 
