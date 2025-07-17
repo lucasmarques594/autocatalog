@@ -49,7 +49,40 @@ export async function PUT(request: NextRequest, { params }: Params) {
       return NextResponse.json({ error: 'Carro não encontrado' }, { status: 404 });
     }
 
-    if (car.createdById !== userId && role !== 'ADMIN') {
+    let hasPermission = false;
+
+    // 1. É o criador direto?
+    if (car.createdById === userId) {
+      hasPermission = true;
+    }
+
+    // 2. É um ADMIN?
+    if (role === 'ADMIN') {
+      hasPermission = true;
+    }
+
+    // 3. É um Vendedor da mesma loja do carro?
+    if (role === 'SELLER' && car.storeId) {
+      // Verifica se o vendedor pertence à mesma loja do carro
+      const sellerProfile = await prisma.seller.findUnique({
+        where: { userId },
+      });
+      if (sellerProfile && sellerProfile.storeId === car.storeId) {
+        hasPermission = true;
+      }
+    }
+    
+    // 4. É o DONO da loja do carro?
+    if (role === 'STORE' && car.storeId) {
+        const storeProfile = await prisma.store.findUnique({
+            where: { userId }
+        });
+        if (storeProfile && storeProfile.id === car.storeId) {
+            hasPermission = true;
+        }
+    }
+
+    if (!hasPermission) {
       return NextResponse.json({ error: 'Você não tem permissão para editar este anúncio' }, { status: 403 });
     }
 

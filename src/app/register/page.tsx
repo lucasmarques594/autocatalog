@@ -82,6 +82,8 @@ export default function RegisterPage() {
           <Input label="Nome Completo" {...register('name')} error={errors.name?.message} />
           <Input label="Email" type="email" {...register('email')} error={errors.email?.message} />
           <Input label="Senha" type="password" {...register('password')} error={errors.password?.message} />
+          <Input label="Telefone para Contato (com DDD)" {...register('phone')} error={errors.phone?.message} placeholder="(11) 99999-9999"/>
+          <Input label="Endereço (Cidade - UF)" {...register('address')} error={errors.address?.message} placeholder="São Paulo - SP"/>
           
           {/* Campos Condicionais */}
           
@@ -100,6 +102,8 @@ export default function RegisterPage() {
               <Input label="Nome da Loja" {...register('storeName')} error={errors.storeName?.message} />
               <Input label="CNPJ" {...register('cnpj')} error={errors.cnpj?.message} placeholder="00.000.000/0001-00" />
               <Input label="Endereço da Loja (Opcional)" {...register('storeAddress')} error={errors.storeAddress?.message} />
+              <Input label="Telefone para Contato (com DDD)" {...register('phone')} error={errors.phone?.message} placeholder="(11) 99999-9999"/>
+              <Input label="Endereço (Cidade - UF)" {...register('address')} error={errors.address?.message} placeholder="São Paulo - SP"/>
             </div>
           )}
 

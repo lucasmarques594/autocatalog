@@ -1,4 +1,3 @@
-// src/app/api/auth/register/route.ts
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -11,7 +10,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const data = registrationSchema.parse(body);
 
-    const { name, email, password, role, cpf, cnpj, storeName, storeAddress } = data;
+    const { name, email, password, role, cpf, cnpj, storeName, storeAddress, phone, address } = data;
 
     // Verificar se o email, CPF ou CNPJ já existem
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -36,7 +35,6 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    // Usaremos uma transação do Prisma para garantir a atomicidade
     // Ou tudo é criado com sucesso, ou nada é.
     const result = await prisma.$transaction(async (tx) => {
         // 1. Criar o Usuário base
@@ -52,9 +50,12 @@ export async function POST(request: Request) {
         // 2. Criar o Profile e associar
         await tx.profile.create({
             data: {
-                userId: user.id,
-                cpf,
-                cnpj
+              userId: user.id,
+              cpf,
+              cnpj,
+              phone,    // <-- Adicionado
+              address,  // <-- Adicionado
+              contactEmail: email, 
             }
         });
 

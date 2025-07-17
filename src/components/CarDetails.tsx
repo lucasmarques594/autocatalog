@@ -6,8 +6,9 @@ import { Car } from '@prisma/client';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { Button } from './ui/Button';
 import Link from 'next/link';
+import { EditButtonWrapper } from './EditButtonWrapper'; 
 
-// Nosso tipo que já tínhamos
+
 type CarWithCreator = Car & {
   createdBy: {
     name: string | null;
@@ -64,9 +65,7 @@ export const CarDetails = async ({ carId }: { carId: string }) => {
               <h1 className="text-4xl font-bold text-primary">{car.brand} {car.model}</h1>
               <p className="text-xl text-gray-600">{car.version}</p>
             </div>
-            <Link href={`/cars/${car.id}/edit`}>
-              <Button variant="secondary">Editar</Button>
-            </Link>
+            <EditButtonWrapper carId={car.id} carCreatorId={car.createdById} />
           </div>
           
           <p className="text-4xl font-extrabold text-secondary">

@@ -9,7 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ENUMS (Tipos pré-definidos)
 enum Role {
   ADMIN
   STORE
@@ -83,6 +82,11 @@ model Profile {
   // Dados específicos do perfil
   cpf   String? @unique
   cnpj  String? @unique
+
+  address       String? 
+  phone         String? 
+  contactEmail  String? 
+
 }
 
 model Store {
