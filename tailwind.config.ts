@@ -27,7 +27,7 @@ const config: Config = {
     },
   },
   plugins: [
-      require('@tailwindcss/forms'), // Plugin oficial para estilizar formulários
+    require('@tailwindcss/forms'), // Plugin oficial para estilizar formulários
   ],
 }
 export default config
