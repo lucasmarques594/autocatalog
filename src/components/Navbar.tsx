@@ -1,54 +1,65 @@
+// src/components/Navbar.tsx
 'use client';
 
 import Link from 'next/link';
 import { Button } from './ui/Button';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useSession } from '@/hooks/use-session';
+import { Car, LogOut, UserPlus, PlusCircle } from 'lucide-react';
 
 export const Navbar = () => {
-  const [token, setToken] = useState<string | null>(null);
+  const session = useSession();
 
-  useEffect(() => {
-    // Uma forma simples de ler o cookie
-    const cookieToken = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
-    setToken(cookieToken || null);
-  }, []);
-  
   const handleLogout = () => {
-      document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;'; // Deleta o cookie
-      setToken(null);
-      window.location.href = '/login';
+    localStorage.removeItem('token');
+    window.dispatchEvent(new Event("storage"));
+    window.location.href = '/login';
   };
 
+  useEffect(() => {
+    const handleStorageChange = () => { window.location.reload(); };
+    window.addEventListener('storage', handleStorageChange);
+    return () => { window.removeEventListener('storage', handleStorageChange); };
+  }, []);
+
   return (
-    <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="bg-white/90 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200 shadow-sm">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-bold text-primary">
-              AutoCatalog
+            <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors">
+              <Car size={28} />
+              <span>AutoCatalog</span>
             </Link>
           </div>
-          <div className="flex items-center space-x-4">
-            <Link href="/cars/new" className="text-gray-600 hover:text-primary">
-              Anunciar Veículo
+          <div className="flex items-center space-x-2 md:space-x-4">
+            <Link href="/cars/new">
+              <Button variant="outline" size="sm" className="hidden sm:flex">
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Anunciar
+              </Button>
             </Link>
-            {token ? (
-              <Button onClick={handleLogout} variant="secondary">
+            {session ? (
+              <Button onClick={handleLogout} variant="secondary" size="sm">
+                <LogOut className="w-4 h-4 mr-2" />
                 Sair
               </Button>
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="secondary">Login</Button>
+                  <Button variant="secondary" size="sm">Login</Button>
                 </Link>
                 <Link href="/register">
-                  <Button>Cadastre-se</Button>
+                  <Button variant="primary" size="sm">
+                    <UserPlus className="w-4 h-4 mr-0 sm:mr-2" />
+                    <span className="hidden sm:inline">Cadastre-se</span>
+                  </Button>
                 </Link>
               </>
             )}
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 };
